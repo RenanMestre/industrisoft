@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <nav>
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="maquina.html">Máquinas</a></li>
+        <li><a href="notificacoes.html">Notificações</a></li>
+        <li><a href="relatorio.html">Relatórios</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="container">
+    <!-- Cards -->
+    <section class="status-cards">
+      <div class="card green">
+        <h3>Máquinas operando</h3>
+        <p>12</p>
+      </div>
+      <div class="card yellow">
+        <h3>Máquinas com alerta</h3>
+        <p>2</p>
+      </div>
+      <div class="card red">
+        <h3>Máquinas com falha</h3>
+        <p>1</p>
+      </div>
+      <div class="card">
+        <h3>Próxima manutenção</h3>
+        <p>20/04/2024</p>
+      </div>
+    </section>
+
+    <!-- Gráficos -->
+    <section class="charts">
+      <div class="chart-container">
+        <h3>Estado Geral das Máquinas</h3>
+        <canvas id="statusChart"></canvas>
+      </div>
+      <div class="chart-container">
+        <h3>Temperatura</h3>
+        <canvas id="tempChart"></canvas>
+      </div>
+    </section>
+
+    <!-- Lista de Máquinas -->
+    <section class="machines">
+      <h2>Máquinas</h2>
+      <ul>
+        <li><strong>Máquina 1</strong> - Funcionando normalmente ✅</li>
+        <li><strong>Máquina 2</strong> - Alerta: Vibração acima do normal ⚠️</li>
+        <li><strong>Máquina 3</strong> - Falha: Motor superaquecido ❌</li>
+      </ul>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

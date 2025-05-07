@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alertas / Notificações</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 500px;
+      margin: 0 auto;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .filter-badges {
+      display: flex;
+      gap: 8px;
+    }
+
+    .filter-btn {
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    .filter-btn.preventiva {
+      background-color: #3b82f6;
+    }
+
+    .filter-btn.corretiva {
+      background-color: #f97316;
+    }
+
+    .filter-btn.urgente {
+      background-color: #dc2626;
+    }
+
+    .filter-btn.active {
+      box-shadow: 0 0 0 2px white, 0 0 0 4px #00000030;
+    }
+
+    .alert-item {
+      border-top: 1px solid #eee;
+      padding: 15px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .alert-item:first-of-type {
+      border-top: none;
+    }
+
+    .icon {
+      font-size: 22px;
+      width: 30px;
+    }
+
+    .info h3 {
+      margin: 0;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .info p {
+      margin: 4px 0 0 0;
+      font-size: 14px;
+      color: #555;
+    }
+
+    .time {
+      margin-left: auto;
+      font-size: 12px;
+      color: #888;
+    }
+
+    .back-button {
+      display: inline-block;
+      margin-bottom: 20px;
+      padding: 8px 16px;
+      background-color: #e5e7eb;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .back-button:hover {
+      background-color: #d1d5db;
+    }
+  </style>
+</head>
+<body>
+  <a href="index.html"><button class="back-button" onclick="history.back()">← Voltar</button></a>
+
+  <div class="container">
+    <div class="top-bar">
+      <div class="title">Alertas / Notificações</div>
+      <div class="filter-badges">
+        <button class="filter-btn urgente" data-filter="urgente">🚨 Urgente</button>
+        <button class="filter-btn corretiva" data-filter="corretiva">🔧 Corretiva</button>
+        <button class="filter-btn preventiva" data-filter="preventiva">🔍 Preventiva</button>
+        <button class="filter-btn active" data-filter="all">🔁 Todos</button>
+      </div>
+    </div>
+
+    <div id="alert-list"></div>
+  </div>
+
+  <script>
+    const alerts = [
+      {
+        type: 'urgente',
+        title: 'Falha na linha de produção 24',
+        time: 'Há 30 minutos',
+        description: 'Erro no sistema de produção.',
+      },
+      {
+        type: 'corretiva',
+        title: 'Substituição do filtro de óleo pendente',
+        time: 'Há 1 hora',
+        description: 'Manutenção programada.',
+      },
+      {
+        type: 'preventiva',
+        title: 'Inspeção agendada para a máquina #17',
+        time: 'Hoje 08:25',
+        description: 'Inspeção regular de manutenção.',
+      },
+      {
+        type: 'preventiva',
+        title: 'Verificação dos sistemas hidráulicos programada',
+        time: 'Ontem 15:12',
+        description: 'Verificação programada da parte hidráulica.',
+      },
+      {
+        type: 'corretiva',
+        title: 'Nivel de pressão acima do normal',
+        time: '15 Abr 2024',
+        description: 'Verificação e ajuste do sistema de pressão.',
+      }
+    ];
+
+    const alertList = document.getElementById('alert-list');
+    const filterButtons = document.querySelectorAll('.filter-btn');
+
+    function renderAlerts(filter = 'all') {
+      alertList.innerHTML = '';
+
+      const filteredAlerts = filter === 'all'
+        ? alerts
+        : alerts.filter(alert => alert.type === filter);
+
+      filteredAlerts.forEach(alert => {
+        const alertItem = document.createElement('div');
+        alertItem.classList.add('alert-item', alert.type);
+
+        const icon = document.createElement('div');
+        icon.classList.add('icon');
+        icon.innerHTML = alert.type === 'urgente' ? '🚨' :
+                         alert.type === 'corretiva' ? '🔧' : '🔍';
+
+        const info = document.createElement('div');
+        info.classList.add('info');
+
+        const title = document.createElement('h3');
+        title.textContent = alert.title;
+        const description = document.createElement('p');
+        description.textContent = alert.description;
+
+        info.appendChild(title);
+        info.appendChild(description);
+
+        const time = document.createElement('span');
+        time.classList.add('time');
+        time.textContent = alert.time;
+
+        alertItem.appendChild(icon);
+        alertItem.appendChild(info);
+        alertItem.appendChild(time);
+
+        alertList.appendChild(alertItem);
+      });
+    }
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const filter = button.getAttribute('data-filter');
+        renderAlerts(filter);
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+      });
+    });
+
+    renderAlerts();
+  </script>
+</body>
+</html>

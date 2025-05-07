@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Monitoramento de Máquinas</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-tooltip"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  </head>
+  <body class="bg-gray-50 text-gray-800 p-4">
+    <div class="max-w-6xl mx-auto">
+      <div class="flex items-center justify-between mb-4">
+        <a href="index.html"><button onclick="history.back()" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded">
+          ⬅️ Voltar
+        </button></a>
+        <select id="machine-selector" onchange="changeMachine(this.value)" class="p-2 rounded border border-gray-300">
+          <option value="1">Máquina 01 (✅)</option>
+          <option value="2">Máquina 02 (✅)</option>
+          <option value="3">Máquina 03 (✅)</option>
+          <option value="4">Máquina 04 (✅)</option>
+          <option value="5">Máquina 05 (✅)</option>
+          <option value="6">Máquina 06 (✅)</option>
+          <option value="7">Máquina 07 (✅)</option>
+          <option value="8">Máquina 08 (✅)</option>
+          <option value="9">Máquina 09 (✅)</option>
+          <option value="10">Máquina 10 (✅)</option>
+          <option value="11">Máquina 11 (✅)</option>
+          <option value="12">Máquina 12 (✅)</option>
+          <option value="13">Máquina 13 (⚠️ Alerta)</option>
+          <option value="14">Máquina 14 (❌ Falha)</option>
+          <option value="15">Máquina 15 (❌ Falha)</option>
+        </select>
+      </div>
+
+      <h1 id="machine-title" class="text-3xl font-bold mb-4">MÁQUINA 01</h1>
+      <div class="flex items-center mb-6" id="status-container">
+        <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
+        <span class="text-lg font-medium">Funcionando normalmente</span>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+        <div class="bg-white shadow-md rounded-xl p-4 text-center">
+          <div class="text-red-600 text-xl font-bold">Temperatura</div>
+          <div id="temp-value" class="text-2xl font-semibold">72°C</div>
+        </div>
+        <div class="bg-white shadow-md rounded-xl p-4 text-center">
+          <div class="text-yellow-600 text-xl font-bold">Vibração</div>
+          <div id="vibracao-value" class="text-2xl font-semibold">3.1 mm/s</div>
+        </div>
+        <div class="bg-white shadow-md rounded-xl p-4 text-center">
+          <div class="text-blue-600 text-xl font-bold">Pressão</div>
+          <div id="pressao-value" class="text-2xl font-semibold">5,2 bar</div>
+        </div>
+        <div class="bg-white shadow-md rounded-xl p-4 text-center">
+          <div class="text-blue-800 text-xl font-bold">Ciclos de uso</div>
+          <div id="ciclos-value" class="text-2xl font-semibold">120</div>
+        </div>
+        <div class="bg-white shadow-md rounded-xl p-4 text-center">
+          <div class="text-blue-600 text-xl font-bold">Nível de óleo</div>
+          <div class="relative w-full h-3 bg-gray-200 rounded-full">
+            <div id="oleo-bar" class="absolute top-0 left-0 h-3 bg-blue-600 rounded-full" style="width: 65%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid md:grid-cols-2 g4">
+        <div class="bg-white shadow-md rounded-xl p-4">
+          <canvas id="grafico"></canvas>
+        </div>
+        <div class="bg-white shadow-md rounded-xl p-4">
+          <h2 class="text-xl font-bold mb-2">Análise Preditiva com IA</h2>
+          <p id="ia-aviso" class="mb-4">
+            A IA detectou aumento incomum na Vibração: <strong>Recomendação:</strong> Verificar rolamentos nas próximas 12h.
+          </p>
+          <button id="ia-scan-button" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
+            🔍 Fazer varredura com IA
+          </button>
+          <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 mt-4">
+            📧 Notificar equipe de manutenção
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const machines = {
+        1: { status: "normal", temp: 72, vib: 3.1, press: 5.2, ciclos: 120, oleo: 65, ia: "Verificar rolamentos nas próximas 12h." },
+        13: { status: "alerta", temp: 75, vib: 3.8, press: 6.0, ciclos: 200, oleo: 45, ia: "Atenção: vibração fora do padrão. Inspeção recomendada." },
+        14: { status: "falha", temp: 85, vib: 4.5, press: 7.2, ciclos: 300, oleo: 20, ia: "Falha detectada. Máquina parada." },
+        15: { status: "falha", temp: 88, vib: 4.9, press: 7.5, ciclos: 310, oleo: 15, ia: "Falha grave. Reparo urgente necessário." },
+      };
+
+      const machineStandards = { temp: 72, vib: 3.1 };  // Temperatura e vibração padrão de uma máquina funcionando corretamente.
+
+      const chart = new Chart(document.getElementById('grafico').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: ['06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00'],
+          datasets: [
+            {
+              label: 'Temperatura',
+              data: [70, 71, 72, 72, 73, 74, 75],
+              borderColor: '#f59e0b',
+              backgroundColor: 'transparent',
+              tension: 0.4
+            },
+            {
+              label: 'Vibração',
+              data: [2.8, 2.9, 3.0, 3.0, 3.1, 3.1, 3.2],
+              borderColor: '#3b82f6',
+              backgroundColor: 'transparent',
+              tension: 0.4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            tooltip: { enabled: true },
+            legend: { display: true }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+
+      function changeMachine(id) {
+        id = parseInt(id);
+        const data = machines[id] || machines[1];
+
+        // Atualiza título
+        document.getElementById('machine-title').innerText = `MÁQUINA ${String(id).padStart(2, '0')}`;
+
+        // Atualiza status visual
+        const statusEl = document.getElementById('status-container');
+        let statusText = "";
+        let statusColor = "";
+
+        switch (data.status) {
+          case "alerta":
+            statusText = "Alerta: Verificação necessária";
+            statusColor = "bg-yellow-500";
+            break;
+          case "falha":
+            statusText = "Falha crítica!";
+            statusColor = "bg-red-600";
+            break;
+          default:
+            statusText = "Funcionando normalmente";
+            statusColor = "bg-green-500";
+        }
+
+        statusEl.innerHTML = `<div class="w-4 h-4 ${statusColor} rounded-full mr-2"></div>
+                              <span class="text-lg font-medium">${statusText}</span>`;
+
+        // Atualiza valores
+      let temp = data.temp;
+        let vib = data.vib;
+
+        // Ajustar temperatura e vibração para os padrões da máquina
+        if (data.status === "normal") {
+          temp = machineStandards.temp;
+          vib = machineStandards.vib;
+        }
+
+        document.getElementById('temp-value').innerText = `${temp}°C`;
+        document.getElementById('vibracao-value').innerText = `${vib} mm/s`;
+        document.getElementById('pressao-value').innerText = `${data.press.toFixed(1)} bar`;
+        document.getElementById('ciclos-value').innerText = data.ciclos;
+        document.getElementById('oleo-bar').style.width = `${data.oleo}%`;
+        document.getElementById('ia-aviso').innerHTML = `A IA detectou: <strong>${data.ia}</strong>`;
+      }
+
+        document.getElementById('ia-scan-button').addEventListener('click', function() {
+        const selectedMachine = parseInt(document.getElementById('machine-selector').value);
+        const machineData = machines[selectedMachine];
+
+        if (machineData.status === "falha") {
+        // A IA detecta a falha grave
+        alert("A IA detectou: Falha grave. Reparo urgente necessário.");
+        
+        // Simula a resolução do problema e a volta ao funcionamento
+        //machines[selectedMachine].status = "normal";
+        //changeMachine(selectedMachine);
+        //alert("Erro no posicionamento da peça ajustado.");
+        } else if (machineData.status === "alerta") {
+        // A IA detecta um erro de programação corrigido
+        alert("Problema encontrado na programação e corrigido!");
+        
+        // Simula a correção e retorna ao estado normal
+        machines[selectedMachine].status = "normal";
+        alert("Varredura completa e nenhum problema encontrado!");
+        changeMachine(selectedMachine);
+        } else if (machineData.status === "normal") {
+        alert("Varredura completa e nenhum problema encontrado!");
+        }
+    });
+    </script>
+
+  </body>
+</html>
