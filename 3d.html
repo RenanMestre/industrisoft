@@ -5,15 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Modelo 3D com Three.js</title>
   <style>
-    body { margin: 0; overflow: hidden; }
-    #3d-container { width: 100vw; height: 100vh; }
+    body { margin: 0; overflow: hidden; background: #121212; font-family: Arial, sans-serif; }
+    #3d-container { width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; position: relative; }
+    #loading-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #ffffff;
+      font-size: 24px;
+      font-weight: bold;
+      z-index: 10;
+    }
+    #loading-bar {
+      width: 80%;
+      height: 15px;
+      background-color: #444;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    #loading-progress {
+      width: 0;
+      height: 100%;
+      background-color: #00E676;
+    }
+    .info-container {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      color: #ffffff;
+      font-size: 18px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      width: 200px;
+      max-width: 300px;
+    }
+    .info-container-right {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      color: #ffffff;
+      font-size: 18px;
+      background: rgba(0, 0, 0, 0.5);
+      padding: 10px;
+      border-radius: 10px;
+      width: 200px;
+      max-width: 300px;
+    }
+    /* Responsividade */
+    @media screen and (max-width: 768px) {
+      .info-container, .info-container-right {
+        font-size: 14px;
+        width: 150px;
+        max-width: 100%;
+      }
+      #loading-bar {
+        width: 90%;
+      }
+    }
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 </head>
 <body>
-  <div id="3d-container"></div>
+  <!-- Tela de Carregamento -->
+  <div id="loading-screen">
+    <div>
+      <p>Carregando Modelo 3D...</p>
+      <div id="loading-bar">
+        <div id="loading-progress"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Container para o modelo 3D -->
+  <div id="3d-container">
+    <div class="info-container">
+      <h3>Máquina operando normalmente</h3>
+      <p>Status: <span style="color: #00E676;">Funcionando</span></p>
+      <p>Temperatura: <span style="color: #00E676;">28°C</span></p>
+      <p>Carga de trabalho: <span style="color: #00E676;">70%</span></p>
+      <p>Rendimento: <span style="color: #00E676;">105 unidades/hora</span></p>
+    </div>
+    <div class="info-container-right">
+      <h3>Informações Técnicas</h3>
+      <p>Modelo: <span style="color: #00E676;">Torno XYZ 5000</span></p>
+      <p>Fabricante: <span style="color: #00E676;">Industrias XYZ</span></p>
+      <p>Última manutenção: <span style="color: #00E676;">01/05/2025</span></p>
+      <p>Próxima manutenção: <span style="color: #00E676;">01/08/2025</span></p>
+    </div>
+  </div>
 
   <script>
     // Cena, câmera e renderizador
@@ -23,32 +111,44 @@
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.getElementById('3d-container').appendChild(renderer.domElement);
 
-    // Luz ambiente
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    // Luzes
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6); // Luz suave
     scene.add(ambientLight);
 
-    // Controles do mouse
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1); // Luz direcional
+    directionalLight.position.set(5, 5, 5).normalize();
+    scene.add(directionalLight);
+
+    // Controles de câmera
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
+    controls.dampingFactor = 0.25;
+    controls.screenSpacePanning = false;
 
-    // Carregar modelo
+    // Carregar modelo (Certifique-se de que o modelo seja carregado corretamente e sem duplicação)
     let loadedObject = null;
     const loader = new THREE.OBJLoader();
     loader.load('base.obj',
       function (object) {
+        // Certificando-se de que só temos um modelo na cena
+        if (loadedObject) {
+          scene.remove(loadedObject);
+        }
         object.scale.set(1, 1, 1);
         object.position.set(0, -1, 0);
         scene.add(object);
         loadedObject = object;
       },
-      undefined,
+      function (xhr) {
+        const progress = (xhr.loaded / xhr.total) * 100;
+        document.getElementById('loading-progress').style.width = progress + '%'; // Atualiza barra de progresso
+      },
       function (error) {
         console.error('Erro ao carregar o modelo:', error);
       }
     );
 
-    // Posição da câmera
+    // Posição inicial da câmera
     camera.position.set(0, 1, 5);
 
     // Responsividade
@@ -58,17 +158,31 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
     });
 
-    // Loop de animação
+    // Função para animar e renderizar a cena
     function animate() {
       requestAnimationFrame(animate);
-      if (loadedObject) {
 
+      if (loadedObject) {
+        // Ações que podem ser feitas com o objeto (ex: rotação)
+        loadedObject.rotation.y += 0.01;
       }
-      controls.update(); // OrbitControls
+
+      controls.update(); // Atualiza os controles
       renderer.render(scene, camera);
     }
 
     animate();
+
+    // Remover tela de carregamento quando o modelo estiver totalmente carregado
+    loader.load('base.obj', function (object) {
+      if (loadedObject) {
+        scene.remove(loadedObject); // Remove o modelo anterior, se existir
+      }
+      scene.add(object);
+      loadedObject = object;
+      document.getElementById('loading-screen').style.display = 'none'; // Esconde a tela de carregamento
+    });
+
   </script>
 </body>
 </html>
