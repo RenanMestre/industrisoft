@@ -1,3 +1,11 @@
+// Menu toggle
+const menuToggle = document.getElementById('menu-toggle');
+const navbar = document.getElementById('navbar');
+
+menuToggle.addEventListener('click', () => {
+  navbar.classList.toggle('active');
+});
+
 // Estado geral das máquinas (pizza)
 const statusCtx = document.getElementById('statusChart').getContext('2d');
 new Chart(statusCtx, {

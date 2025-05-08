@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoramento de Segurança Cibernética</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1A1A1A; /* Fundo escuro para dar um efeito de vigilância */
+            color: #E0E0E0; /* Texto claro para contraste em relação ao fundo escuro */
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #121212; /* Cor de fundo mais escura no cabeçalho */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #333;
+        }
+        header h1 {
+            font-size: 36px;
+            margin: 0;
+            color: #00E676; /* Cor verde vibrante para destaque (associado a segurança) */
+        }
+        .main-content {
+            padding: 20px;
+        }
+        .section-title {
+            font-size: 28px;
+            border-bottom: 2px solid #00E676; /* Linha verde para destacar as seções */
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background-color: #252525; /* Cartões mais escuros para não poluir o layout */
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .card h2 {
+            margin-top: 0;
+            color: #00E676;
+        }
+        .card p {
+            font-size: 16px;
+        }
+        footer {
+            background-color: #121212;
+            color: #E0E0E0;
+            text-align: center;
+            padding: 10px;
+            margin-top: 40px;
+        }
+        .chart-container {
+            margin-top: 30px;
+            text-align: center;
+        }
+        canvas {
+            max-width: 100%;
+            height: 250px; /* Ajuste da altura do gráfico */
+        }
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #00E676;
+            color: #121212;
+            font-size: 18px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .cta-button:hover {
+            background-color: #00C853;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Monitoramento de Segurança Cibernética</h1>
+    </header>
+
+    <div class="main-content">
+        <section class="card">
+            <h2>Visão Geral do Monitoramento</h2>
+            <p>Nosso sistema de monitoramento oferece uma visão detalhada sobre ameaças cibernéticas, com alertas em tempo real, estatísticas de ataques e gráficos de atividades suspeitas em sua rede.</p>
+        </section>
+
+        <section class="card">
+            <h2>Atividade Recente</h2>
+            <ul>
+                <li><strong>Phishing detectado:</strong> 12 tentativas no último minuto.</li>
+                <li><strong>Malware bloqueado:</strong> 5 ataques no último intervalo.</li>
+                <li><strong>Ransomware em potencial:</strong> 3 ameaças identificadas.</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Ataques por Categoria</h2>
+            <ul>
+                <li>Phishing: 40%</li>
+                <li>Malware: 30%</li>
+                <li>Ransomware: 20%</li>
+                <li>Vulnerabilidades: 10%</li>
+            </ul>
+        </section>
+
+        <section class="chart-container">
+            <h2 class="section-title">Gráfico de Ataques Cibernéticos Recentes</h2>
+            <canvas id="attackChart"></canvas>
+        </section>
+
+        <section>
+            <p>Para mais informações sobre o status de sua rede, acesse nossa plataforma de monitoramento em tempo real. <a href="https://www.example.com" class="cta-button">Acessar Plataforma</a></p>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Monitoramento de Segurança Cibernética - Todos os direitos reservados</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const ctx = document.getElementById('attackChart').getContext('2d');
+        const attackChart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: ['Phishing', 'Malware', 'Ransomware', 'Vulnerabilidades'],
+                datasets: [{
+                    label: 'Distribuição de Ataques Cibernéticos',
+                    data: [40, 30, 20, 10], // Percentuais de distribuição
+                    backgroundColor: ['#FF4081', '#FF9800', '#00E676', '#2196F3'],
+                    borderColor: '#121212',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        backgroundColor: '#333',
+                        titleColor: '#FFF',
+                        bodyColor: '#E0E0E0'
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

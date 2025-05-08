@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modelo 3D com Three.js</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    #3d-container { width: 100vw; height: 100vh; }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div id="3d-container"></div>
+
+  <script>
+    // Cena, câmera e renderizador
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('3d-container').appendChild(renderer.domElement);
+
+    // Luz ambiente
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    scene.add(ambientLight);
+
+    // Controles do mouse
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Carregar modelo
+    let loadedObject = null;
+    const loader = new THREE.OBJLoader();
+    loader.load('base.obj',
+      function (object) {
+        object.scale.set(1, 1, 1);
+        object.position.set(0, -1, 0);
+        scene.add(object);
+        loadedObject = object;
+      },
+      undefined,
+      function (error) {
+        console.error('Erro ao carregar o modelo:', error);
+      }
+    );
+
+    // Posição da câmera
+    camera.position.set(0, 1, 5);
+
+    // Responsividade
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // Loop de animação
+    function animate() {
+      requestAnimationFrame(animate);
+      if (loadedObject) {
+
+      }
+      controls.update(); // OrbitControls
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

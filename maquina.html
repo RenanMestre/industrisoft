@@ -57,10 +57,18 @@
           <div id="ciclos-value" class="text-2xl font-semibold">120</div>
         </div>
         <div class="bg-white shadow-md rounded-xl p-4 text-center">
-          <div class="text-blue-600 text-xl font-bold">Nível de óleo</div>
-          <div class="relative w-full h-3 bg-gray-200 rounded-full">
+          <div class="text-blue-600 text-xl font-bold mb-2">Nível de óleo</div>
+          <div class="relative w-full h-3 bg-gray-200 rounded-full mb-2">
             <div id="oleo-bar" class="absolute top-0 left-0 h-3 bg-blue-600 rounded-full" style="width: 65%;"></div>
           </div>
+          <div class="text-sm text-gray-500">65% de capacidade</div>
+        </div>
+        <!-- Análise do filtro de óleo -->
+        <div class="bg-white shadow-md rounded-xl p-4 text-center">
+          <div class="text-indigo-600 text-xl font-bold mb-2">Filtro da máquina</div>
+          <p class="text-sm text-gray-700 mb-2">
+            Sem indícios de obstrução. Verificação em <strong>300 ciclos</strong>.
+          </p>
         </div>
       </div>
 
@@ -79,6 +87,9 @@
           <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 mt-4">
             📧 Notificar equipe de manutenção
           </button>
+          <a href="/3d.html"><button id="view-problem-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 mt-4">
+            🔴 Ver máquina
+          </button></a>
         </div>
       </div>
     </div>
