@@ -1,72 +1,109 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dashboard</title>
-  <link rel="stylesheet" href="styles.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciando Sistema do Futuro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #121212;
+            color: #E0E0E0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        .loading-container {
+            text-align: center;
+            border: 2px solid #00E676;
+            padding: 40px;
+            border-radius: 15px;
+            background-color: #252525;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+        h1 {
+            font-size: 36px;
+            color: #00E676;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 20px;
+            color: #E0E0E0;
+            margin-bottom: 40px;
+        }
+        .loading-bar {
+            width: 100%;
+            height: 10px;
+            background-color: #333;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        .loading-progress {
+            width: 0;
+            height: 100%;
+            background-color: #00E676;
+            border-radius: 5px;
+        }
+        .motivational {
+            font-size: 18px;
+            color: #E0E0E0;
+            font-style: italic;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <button id="menu-toggle" class="menu-toggle">&#9776;</button> <!-- Botão de menu -->
-    <a href="https://www.romi.com/"><img src="static/Logo_Romi.png" alt="Logo"></a>
-    <nav id="navbar" class="hidden">
-      <ul>
-        <li><a href="#">Dashboard</a></li>
-        <li><a href="maquina.html">Máquinas</a></li>
-        <li><a href="notificacoes.html">Notificações</a></li>
-        <li><a href="relatorio.html">Relatórios</a></li>
-        <li><a href="#">Chatbot (em desenvolvimento)</a></li>
-        <li><a href="dashboard.html">Segurança cibernética</a></li>        
-      </ul>
-    </nav>
-  </header>
+    <div class="loading-container">
+        <h1>Conectando...</h1>
+        <p>Aguarde enquanto seu sistema se prepara.</p>
+        <div class="loading-bar">
+            <div class="loading-progress" id="progress"></div>
+        </div>
+        <div class="motivational" id="motivationalMessage">
+            "Vamos avançar pro futuro com segurança e respeitando o ambiente!"
+        </div>
+    </div>
 
-  <main class="container">
-    <!-- Cards -->
-    <section class="status-cards">
-      <div class="card green">
-        <h3>Máquinas operando</h3>
-        <p>12</p>
-      </div>
-      <div class="card yellow">
-        <h3>Máquinas com alerta</h3>
-        <p>2</p>
-      </div>
-      <div class="card red">
-        <h3>Máquinas com falha</h3>
-        <p>1</p>
-      </div>
-      <div class="card">
-        <h3>Próxima manutenção</h3>
-        <p>20/04/2024</p>
-      </div>
-    </section>
+    <script>
+        let progress = 0;
+        const progressElement = document.getElementById('progress');
+        const motivationalElement = document.getElementById('motivationalMessage');
+        const messages = [
+            "Segurança em primeiro lugar. Vamos proteger seu mundo digital!",
+            "Prepare-se para entrar no futuro.",
+            "Sustentabilidade, monitoramento e segurança. Tudo em um só lugar.",
+            "Seu sistema, sua segurança. Tudo começa agora!"
+        ];
+        let messageIndex = 0;
 
-    <!-- Gráficos -->
-    <section class="charts">
-      <div class="chart-container">
-        <h3>Estado Geral das Máquinas</h3>
-        <canvas id="statusChart"></canvas>
-      </div>
-      <div class="chart-container">
-        <h3>Temperatura</h3>
-        <canvas id="tempChart"></canvas>
-      </div>
-    </section>
+        function updateProgress() {
+            if (progress < 100) {
+                progress += 1;
+                progressElement.style.width = progress + "%";
+            } else {
+                clearInterval(progressInterval);
+                setTimeout(transitionToMainMenu, 1000); // Aguarda 1 segundo antes de ir para o menu
+            }
+        }
 
-    <!-- Lista de Máquinas -->
-    <section class="machines">
-      <h2>Máquinas</h2>
-      <ul>
-        <li><strong>Máquina 1</strong> - Funcionando normalmente ✅</li>
-        <li><strong>Máquina 2</strong> - Alerta: Vibração acima do normal ⚠️</li>
-        <li><strong>Máquina 3</strong> - Falha: Motor superaquecido ❌</li>
-      </ul>
-    </section>
-  </main>
+        function changeMessage() {
+            messageIndex = (messageIndex + 1) % messages.length;
+            motivationalElement.textContent = messages[messageIndex];
+        }
 
-  <script src="script.js"></script>
+        function transitionToMainMenu() {
+            window.location.href = "menu.html"; // Redireciona para a tela de menu
+        }
+
+        // Atualiza o progresso e a mensagem a cada 100ms
+        const progressInterval = setInterval(() => {
+            updateProgress();
+            changeMessage();
+        }, 100);
+    </script>
 </body>
 </html>
