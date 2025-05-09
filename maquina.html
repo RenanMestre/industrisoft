@@ -33,7 +33,7 @@
         </select>
       </div>
 
-      <h1 id="machine-title" class="text-3xl font-bold mb-4">MÁQUINA 01</h1>
+      <h1 id="machine-title" class="text-3xl font-bold mb-4">Torno mecânico 01</h1>
       <div class="flex items-center mb-6" id="status-container">
         <div class="w-4 h-4 bg-green-500 rounded-full mr-2"></div>
         <span class="text-lg font-medium">Funcionando normalmente</span>
@@ -142,7 +142,9 @@
         const data = machines[id] || machines[1];
 
         // Atualiza título
-        document.getElementById('machine-title').innerText = `MÁQUINA ${String(id).padStart(2, '0')}`;
+        const selectedOption = document.querySelector(`#machine-selector option[value="${id}"]`);
+        document.getElementById('machine-title').innerText = selectedOption ? selectedOption.textContent.split(' (')[0] : `Máquina ${id}`;
+
 
         // Atualiza status visual
         const statusEl = document.getElementById('status-container');
