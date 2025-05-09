@@ -28,6 +28,15 @@ header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
+.eco-card {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-left: 5px solid #43a047;
+}
+.eco-card h3 {
+  margin-top: 0;
+}
+
 #menu-toggle {
   font-size: 30px;
   background: none;
