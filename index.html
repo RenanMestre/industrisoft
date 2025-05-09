@@ -52,7 +52,11 @@
             font-size: 18px;
             color: #E0E0E0;
             font-style: italic;
-            margin-top: 20px;
+            height: 50px; /* altura fixa */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.5s ease-in-out;
         }
     </style>
 </head>
@@ -73,10 +77,7 @@
         const progressElement = document.getElementById('progress');
         const motivationalElement = document.getElementById('motivationalMessage');
         const messages = [
-            "Segurança em primeiro lugar. Vamos proteger seu mundo digital!",
-            "Prepare-se para entrar no futuro.",
-            "Sustentabilidade, monitoramento e segurança. Tudo em um só lugar.",
-            "Seu sistema, sua segurança. Tudo começa agora!"
+            "Prepare-se para entrar no futuro."
         ];
         let messageIndex = 0;
 
@@ -89,10 +90,14 @@
                 setTimeout(transitionToMainMenu, 1000); // Aguarda 1 segundo antes de ir para o menu
             }
         }
-
+        
         function changeMessage() {
-            messageIndex = (messageIndex + 1) % messages.length;
-            motivationalElement.textContent = messages[messageIndex];
+            motivationalElement.style.opacity = 0; // Esmaece
+            setTimeout(() => {
+                messageIndex = (messageIndex + 1) % messages.length;
+                motivationalElement.textContent = messages[messageIndex];
+                motivationalElement.style.opacity = 1; // Reaparece
+            }, 300);
         }
 
         function transitionToMainMenu() {
