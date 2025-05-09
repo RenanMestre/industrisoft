@@ -87,8 +87,8 @@
           <button class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 mt-4">
             📧 Notificar equipe de manutenção
           </button>
-          <a href="3d.html"><button id="view-problem-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 mt-4">
-            🔴 Ver máquina
+          <a href="ra.html"><button id="view-problem-button" class="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 mt-4">
+            🔴 Ver máquinas
           </button></a>
         </div>
       </div>
@@ -178,38 +178,45 @@
           vib = machineStandards.vib;
         }
 
+        // Atualiza os dados exibidos na interface
         document.getElementById('temp-value').innerText = `${temp}°C`;
         document.getElementById('vibracao-value').innerText = `${vib} mm/s`;
         document.getElementById('pressao-value').innerText = `${data.press.toFixed(1)} bar`;
         document.getElementById('ciclos-value').innerText = data.ciclos;
         document.getElementById('oleo-bar').style.width = `${data.oleo}%`;
         document.getElementById('ia-aviso').innerHTML = `A IA detectou: <strong>${data.ia}</strong>`;
+
+        // Evento de clique no botão de varredura IA
+        document.getElementById('ia-scan-button').addEventListener('click', function () {
+            const selectedMachine = parseInt(document.getElementById('machine-selector').value);
+            const machineData = machines[selectedMachine];
+
+            if (!machineData) {
+                alert("Máquina não encontrada.");
+                return;
+            }
+
+            if (machineData.status === "falha") {
+                // A IA detecta uma falha grave
+                alert("A IA detectou: Falha grave. Reparo urgente necessário.");
+
+                // Aqui você pode simular uma ação futura, como registrar a falha
+                // ou alterar o status após manutenção
+            } else if (machineData.status === "alerta") {
+                // A IA detecta um erro de programação corrigido
+                alert("A IA detectou: vibração fora do padrão. Problema encontrado na programação e corrigido!");
+
+                // Corrige o status e atualiza a visualização
+                machineData.status = "normal";
+                alert("Varredura completa e nenhum problema encontrado!");
+                changeMachine(selectedMachine);
+            } else if (machineData.status === "normal") {
+                alert("Varredura completa e nenhum problema encontrado!");
+            } else {
+                alert("Status desconhecido.");
+            }
+        });
       }
-
-        document.getElementById('ia-scan-button').addEventListener('click', function() {
-        const selectedMachine = parseInt(document.getElementById('machine-selector').value);
-        const machineData = machines[selectedMachine];
-
-        if (machineData.status === "falha") {
-        // A IA detecta a falha grave
-        alert("A IA detectou: Falha grave. Reparo urgente necessário.");
-        
-        // Simula a resolução do problema e a volta ao funcionamento
-        //machines[selectedMachine].status = "normal";
-        //changeMachine(selectedMachine);
-        //alert("Erro no posicionamento da peça ajustado.");
-        } else if (machineData.status === "alerta") {
-        // A IA detecta um erro de programação corrigido
-        alert("Problema encontrado na programação e corrigido!");
-        
-        // Simula a correção e retorna ao estado normal
-        machines[selectedMachine].status = "normal";
-        alert("Varredura completa e nenhum problema encontrado!");
-        changeMachine(selectedMachine);
-        } else if (machineData.status === "normal") {
-        alert("Varredura completa e nenhum problema encontrado!");
-        }
-    });
     </script>
 
   </body>
